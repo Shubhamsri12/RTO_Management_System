@@ -1,0 +1,63 @@
+insert into RTO(RTO_code,State,District,pincode) values (101,'Gujarat','Ahmedabad',380027), (102,'Gujarat','Jamnagar',361001), (203,'Uttar Pradesh','Lucknow',226012),
+(103,'Gujarat','Rajkot',360005), (104,'Gujarat','Surat',395001);
+
+insert into application_type(Application_type_Number,purpose_of_application,max_no_of_attempt,Application_type_fee) values (1001,'Driving-License',5,500);
+insert into application_type(Application_type_Number,purpose_of_application,Application_type_fee) values 
+(2001,'Vehicle Registration',1000),(3001,'License Renewal',700),
+(3002,'RC Duplication',1200);
+insert into application_type(Application_type_Number,purpose_of_application,max_no_of_attempt,Application_type_fee) values (1002,'Driving-License',5,500);
+
+insert into ApplicationType_documents_required values 
+(1001,'Adhar-Card'), (1001,'Passport'), 
+(2001,'Insuarance of Vehicle'), 
+(2001,'ID Proof of owner'), (2001,'PUC'), 
+(3001,'Orginal License'), (3001,'ID Proof of the holder'),
+(3002,'Original RC'),(3002,'PUC of Vehicle'),(3002,'ID Proof of Owner'); 
+
+insert into forms values ('20','Application for Registration of Vehicle',2001), ('1','Application-Cum-Declaration as to Physical Fitness',1001), ('1A','Medical Certificate',1001),
+('4','Application for license to drive',1001), ('9','Application for Renewal of License',3001), ('1A','Medical Fitness',3001), ('26','Application for Renewal of RC',3002);
+
+insert into application(Application_number,name_of_applicant,DOB,contact_number,application_date,status,Application_Fee,rto_code,application_type_number) values (10101,'ABC XYZ','01-02-1999',1234567890,'15-10-2021','Approved',500,101,1001), (10201,'XYZ ABC','01-03-1994',9999888877,'14-10-2021','Approved',1000,102,2001)
+,(10301,'PQR XYZ','28-02-1992',9876541230,'15-10-2021','Pending',700,103,3001), (10202,'CDE PQR','05-06-1990',9798949591,'16-10-2021','Pending',1200,102,3002);
+
+
+insert into application(Application_number,name_of_applicant,DOB,contact_number,application_date,status,Application_Fee,rto_code,application_type_number) values (10102,'ABC XYZ','01-02-1999',1234567890,'15-10-2021','Approved',500,101,1002);
+
+insert into appointment values (101001,'Driving-License Test','12:30','17-10-2021','Ahmedabad',10101), (102001,'Vehicle Registration','11:30','16-10-2021','Jamnagar',10201);
+insert into appointment values (101000,'Learning-License Test','11:15','14-11-2019','Ahmedabad',10101);
+
+insert into holder_of_license(License_number,Date_of_issue,Expiry_date,Type,Application_number) values ('GJ0312239856001','20-10-2021','20-10-2041','LMV',10301), ('GJ0112269752011','25-10-2021','25-10-2041','MCWG',10101);
+insert into holder_of_license(License_number,Date_of_issue,Expiry_date,Type,Application_number) values ('GJ0312239856002','20-10-2021','20-10-2041','LMV',10102);
+
+
+insert into Transaction values (1234567,500,'Paid','15-10-2021 10:30:10','Driving-License Test Fees',10101), (1345721,1000,'Paid','14-10-2021 12:30:10','Vehicle Registration Fees',10201),
+(1232421,700,'Pending','15-10-2021 13:30:10','License Renewal Fees',10301), (1335785,1200,'Pending','16-10-2021 15:15:45','RC Renewal/Duplication',10202);
+insert into Transaction values (123475,600,'Paid','15-10-2020 12:15:10','Learning-License Test Fees',10101);
+
+insert into Engine(Engine_Number,Engine_type) values ('V2403MDITE2BXXX2','4CYL 2400CC DI'), ('D2403MDITE2BYXX2','3CYL 2400CC DI'), ('D1005MDITE2BXXX2','3CYL 1000CC DI');
+
+insert into vehicle values ('GJ01AB1002','Mr. ABC XYZ','12-12-2015','Private','BMW','Q3','Blue',101,'1BMBH41JXMN109186','V2403MDITE2BXXX2',NULL,'10-01-2016');
+insert into vehicle values ('GJ01AB1102','Mr. PQR XYZ','01-11-2018','Taxi','Toyota','Innova','White',101,'1TYBH41JXMN110186','D2403MDITE2BYXX2',NULL,'10-11-2018'), 
+('GJ10BC1102','Mr. PQR ABC','01-02-2019','Private','MG','Hector','Red',102,'1MGBH41JYMN110128','D2403MDITE2BYXX2',NULL,'10-02-2019');
+
+insert into track (Track_number,Track_length,Track_status,RTO_code,Track_type,slots_Available) values (1,200,'Under Construction',101,'For MotorVehicle Test',100),
+(2,400,'Functioning',101,'Car driving test',50), (3,100,'Functioning',102,'MotorVehicle Test',100), (5,500,'Functioning',203,'Car driving test',100), 
+(10,100,'Under Reconstruction',103,'MotorVehicle Test',150), (4,400,'Under Reconstruction',104,'Car Driving test',80); 
+
+
+insert into Transaction(Transaction_id,amount,status,date_and_time,transaction_name) values (123785,400,'Paid','18-09-2018 12:30:00','Challan'), (145785,1000,'Paid','18-10-2019 14:10:00','Challan'),
+(1231341,2000,'Paid','11-11-2020 19:30:11','Challan');
+insert into Transaction(Transaction_id,amount,status,date_and_time,transaction_name) values (145671,1000,'Paid','20-10-2019 01:00:10','Challan');
+
+insert into challan values (890,'Over-Speeding','Ahmedabad','18-09-2018','10:30:21','GJ01AB1002',123785), (810,'Signal Breaking','Jamnagar','18-10-2019','13:30:19','GJ10BC1102',145785),
+(828,'Seat-Belt','Ahmedabad','11-11-2020','18:30:10','GJ01AB1102',1231341);
+insert into challan values (1000,'Over-Speeding','Ahmedabad','20-10-2019','11:30:10','GJ01AB1002',145671);
+
+insert into test_result values (10000,'Kalpesh chauhan','pass','none',101),(10001,'Prayag Patel','fail','TimeLimitExceed',101),
+(10002,'Prashil','Pass','None',104);
+insert into complains values (1,'prayag',1234567891,'slot booking problem',101),(2,'prashil',234567891,'DL not received',102),
+(3,'shubham',345678912,'Transaction failed but amount deducted',104);
+insert into slot_details values ('25-11-2021','9:00','LMV',101,20),('26-11-2021','11:00','MCWG',102,15),
+('25-11-2021','9:00','MCWOG',101,0);
+insert into ownership_transfer values('GJ01AB1002','MR. prayag','Mr.ABC XYZ',123456789258,234567891234),('GJ01AB1102','Mr. PQR XYZ','Pashil',852874179369,854679134265),
+('GJ10BC1102','Mr. PQR ABC','shubham',741785289639,963974178528);

@@ -1,0 +1,200 @@
+create schema rto_management_system;
+set search_path to rto_management_system;
+
+create table appointment(
+	appointment_acknowledgment_number bigint,
+	PurposeOfAppointment text not null,
+	Time time not null,
+	Date date not null,
+	Place text not null,
+	application_number bigint,
+	primary key(appointment_acknowledgment_number),
+	unique(date,time,appointment_acknowledgment_number)
+);
+
+create table application(
+	Application_number bigint,
+	name_of_applicant text not null,
+	DOB date not null,
+	contact_number bigint not null,
+	application_date date not null,
+	status text,
+	attempt_no int default NULL,
+	Application_Fee numeric,
+	rto_code int not null,
+	application_type_number bigint not null,
+	primary key(application_number)
+);
+
+create table holder_of_license(
+	License_number char(15),
+	Date_of_issue date not null,
+	Expiry_date date not null,
+	Type text not null check (Type in ('LL','MC-50CC','MCWOG','MCWG','MGV','LMV','HMV','HGMV','HPMV/HTV','TRAILER')),
+	History text DEFAULT 'NULL',
+	Application_number bigint not null,
+	primary key(License_number)
+);
+
+create table application_type(
+	Application_type_number bigint,
+	purpose_of_application text not null,
+	max_no_of_attempt int DEFAULT NULL,
+	Application_type_fee numeric,
+	primary key(Application_type_number)
+);
+
+create table ApplicationType_documents_required(
+	Application_type_number bigint not null,
+	document_name text not null
+);
+
+create table forms(
+	form_number char(4) not null,
+	form_name text not null,
+	application_type_number bigint not null
+);
+
+create table Transaction(
+	Transaction_id bigint,
+	amount numeric not null check(amount>=0),
+	status text,
+	date_and_time timestamp default NULL,
+	transaction_name text,
+	Application_number bigint default NULL,
+	primary key(Transaction_id)
+);
+
+create table vehicle(
+	Registration_number char(10),
+	Owner varchar(50) not null,
+	Purchase_date date not null,
+	Class_of_vehicle varchar(7) not null,
+	Company varchar(20) not null,
+	Model_name varchar(40) not null,
+	Colour varchar(20) not null,
+	RTO_code integer not null,
+	Chassis_Number char(17) not null,
+	Engine_Number char(17) not null,
+	challan_history text DEFAULT 'NULL',
+	registration_date date not null,
+	primary key(Registration_number),
+	Unique(Chassis_Number,Company,Model_name)
+);
+
+create table RTO(
+	RTO_code int,
+	State text not null,
+	district text not null,
+	pincode integer not null,
+	primary key(RTO_code),
+	UNIQUE(RTO_code,pincode)
+);
+
+create table track(
+	Track_number smallint,
+	Track_length numeric not null,
+	Track_status text not null,
+	Track_record text DEFAULT 'NULL',
+	RTO_code integer not null,
+	Track_type text,
+	slots_Available int not null check(slots_Available>=0),
+	primary key(track_number,rto_code)
+);
+
+create table Engine(
+	Engine_Number char(17),
+	Engine_type text not null,
+	primary key(Engine_Number)
+);
+
+create table challan(
+	Challan_Number bigint,
+	Rule_Violated text not null,
+	Challan_place text not null,
+	Date date not null,
+	time time not null,
+	Registration_Number char(10) not null,
+	Transaction_id bigint not null,
+	Primary key(Challan_Number),
+	UNIQUE(Challan_Number,Date,time)
+);
+
+create table test_result
+(
+	appointment_acknowledgment_number bigint,
+	conducted_by text not null,
+	test_result text not null,
+	reason_of_failure text,
+	rto_code int not null,
+	primary key(appointment_acknowledgment_number)
+	
+);
+create table complains
+(
+	complain_no bigint,
+	name_of_applicant text,
+	mobile_no bigint,
+	description_of_complaint text,
+	rto_code int,
+	primary key(complain_no)
+);
+create table slot_details
+(
+	Date date not null,
+	Time time not null,
+	slot_type text not null,
+	rto_code int,
+	slot_available int,
+	primary key(Date,Time,slot_type,rto_code)
+);
+create table ownership_transfer
+(
+	vehicle_no char(10),
+	previous_owner_name text,
+	new_owner_name text,
+	previous_owner_aadhar_no bigint,
+	new_owner_aadhar_no bigint,
+	primary key(vehicle_no)
+);
+
+create table expired_license(
+	license_number char(15),
+	date_of_issue date,
+	expiry_date date,
+	type text,
+	history text,
+	application_number bigint
+);
+
+create table slots_data(
+	appointment_acknowledgement_number bigint,
+	status text,
+	Date date,
+	Time time,
+	Place text
+);
+alter table Transaction add foreign key(Application_number) references application(Application_number) on update cascade;
+
+alter table vehicle add foreign key(RTO_code) references RTO(RTO_code) on update cascade;
+alter table vehicle add foreign key(Engine_Number) references Engine(Engine_Number) on update cascade;
+
+alter table track add foreign key(RTO_code) references RTO(RTO_code) on update cascade;
+
+alter table challan add foreign key(Registration_Number) references vehicle(Registration_number) on update cascade;
+alter table challan add foreign key(Transaction_id) references Transaction(Transaction_id) on update cascade;
+
+alter table forms add foreign key(application_type_number) references application_type(Application_type_number) on update cascade;
+
+alter table ApplicationType_documents_required add foreign key(Application_type_number) references application_type(Application_type_number);
+
+alter table holder_of_license add foreign key(Application_number) references application(Application_number) on update cascade;
+
+alter table application add foreign key(application_type_number) references application_type(Application_type_number) on update cascade;
+alter table application add foreign key(rto_code) references RTO(RTO_code) on update cascade;
+
+alter table appointment add foreign key(application_number) references application(Application_number) on update cascade;
+alter table test_result add foreign key(rto_code) references rto(RTO_code) on update cascade;
+alter table complains add foreign key(rto_code) references rto(RTO_code) on update cascade;
+alter table slot_details add foreign key(rto_code) references rto(RTO_code) on update cascade;
+alter table ownership_transfer add foreign key(vehicle_no) references vehicle(registration_number) on update cascade;

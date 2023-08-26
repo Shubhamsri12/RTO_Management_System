@@ -1,0 +1,84 @@
+--(1) Given a specific application number show the forms needed to be submitted by applicant
+
+select Application_number,name_of_applicant,form_number,form_name from Application natural join (select * from application_type natural join forms) as ApplicationTypeForm where application_number=10101
+
+--(2) Given a specific application number find its application_type details
+
+select * from application natural join application_type where application_number=10201
+
+--(3) Calculate total transaction amount for given particular rto having status = 'paid'
+
+select rto_code,count(Transaction_id), sum(Amount) from Application join transaction on (Application.application_number=transaction.application_number) group by rto_code,transaction.status having transaction.status='Paid'
+
+--(4) From a given application_number list transaction details
+
+select * from transaction where application_number=10101 
+
+--(5) List applicants who can apply for re-test
+
+select Application_number, name_of_applicant, attempt_no, max_no_of_attempt from Application natural join application_type where attempt_no <= max_no_of_attempt
+
+--(6) List details of all challans issued to a given registration number(GJ01AB1002)
+
+select registration_number,owner,challan_number,rule_violated,date,time from vehicle natural join challan where registration_number = 'GJ01AB1002'
+
+--(7) Display details of all transaction of a given application number(10101)
+
+select Application_number,name_of_applicant,attempt_no from Application where attempt_no >= 2
+
+--(8) Given a specific rto list all the vehicles registered there
+
+select rto_code,registration_number,owner from RTO natural join vehicle where rto_code=101
+
+--(9) Given a specific rto list details of track for a specific test
+
+select * from RTO natural join track where track_type='MotorVehicle Test' AND rto_code=101
+
+--(10) Given a time duration give details of application and appointment
+
+select appointment_acknowledgment_number,purposeofappointment,time,date,name_of_applicant,application_fee,RTO_code from appointment natural join application where date > '01-01-2021' AND date < '31-12-2021'
+
+--(11) Find all the vehicles which have engine type=3CYL 2400CC DI
+
+select registration_number from vehicle  except (select registration_number from ( select v.registration_number,e.engine_number from vehicle as v cross join Engine as e where e.engine_type = '3CYL 2400CC DI' 
+except 
+select vehicle.registration_number,Engine.engine_number from vehicle join Engine on vehicle.engine_number=Engine.engine_number ) as r2 )
+
+--(12) Find all the applications in particular RTO
+
+select application_number from Application except (select application_number from (select r.RTO_code,a.application_number from RTO as r cross join Application  as a where r.RTO_code=102 except select RTO_code,application_number from Application where RTO_code=102) as r2) 
+
+--(13) count number of applicants who are appearing for DL test and having rto_code=101
+
+select purpose_of_application,count(application_number) as Number_of_Applications from Application as A natural join application_type group by purpose_of_application,A.rto_code having purpose_of_application = 'Driving-License' AND A.rto_code=102
+
+--(14) Count number of challans pending for a vehicle
+
+select V.registration_number,count(V.challan_number),sum(T.amount) from Transaction as T natural join (select * from Vehicle natural join challan) as V group by V.registration_number,T.status having T.status='Pending'
+
+--(15) Given application type, list documents required for a particular application type
+
+select application_type_number,purpose_of_application,document_name from application_type natural join ApplicationType_documents_required where application_type_number = 2001
+
+--(16) Given application number list all the appointments booked by that applicant
+
+selec-t application_number,PurposeOfAppointment,time,date,place from Application natural join appointment where application_number=10101 order by appointment_acknowledgment_number;
+
+--(17) Find all details of applicants whose driving license expires in the year 2040 under the RTO_code = 101
+
+select * from Application natural join holder_of_license where expiry_date > '2041-01-01' AND expiry_date < '2042-01-01' AND rto_code=101;
+
+--(18) List registration number of all vehicles purchased between date ' ' to ' ', under the RTO_code=101
+
+select * from vehicle where purchase_date > '2015-01-01' AND purchase_date < '2016-01-01' AND RTO_code=101
+
+--(19) Give all transaction detail of a specific application number on a given date
+
+select Transaction.* from Transaction natural join application where date(date_and_time) = '2021-10-15'
+
+--(20) Count how many active Driving License holders are present in the state 'Gujarat'.
+
+select * from (select state,count(h.type) as Number_of_LMV from RTO natural join (select rto_code,type from Application natural join holder_of_license where type='LMV') as h group by state) as r1
+natural JOIN
+(select state,count(h.type) as Number_of_MCWG from RTO natural join (select rto_code,type from Application natural join holder_of_license where type='MCWG') as h group by state) as r2 
+
